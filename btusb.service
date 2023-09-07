@@ -1,0 +1,9 @@
+[Unit]
+Description=USB HID Proxy Service
+
+[Service]
+User=root
+ExecStart=/usr/bin/btusb.sh
+
+[Install]
+WantedBy=multi-user.target
