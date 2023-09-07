@@ -11,20 +11,35 @@ echo "libcomposite" | sudo tee -a /etc/modules
 CWD=$(dirname $(readlink -f $0))
 HID_SERVICE="btproxy"
 USB_SERVICE="btusb"
+CON_SERVICE="btconnect"
 
-mkdir /tmp/$USB_SERVICE
+# USB Gadget Service
+if [ ! -f /etc/systemd/system/$USB_SERVICE.service ]; then
+    echo "Installing '$USB_SERVICE' service..."
+    mkdir /tmp/$USB_SERVICE
+    chmod 744 $CWD/$USB_SERVICE.sh
+    ln -s $CWD/$USB_SERVICE.sh /usr/bin/
+    ln -s $CWD/$USB_SERVICE.service /etc/systemd/system/
+else
+    echo "'$USB_SERVICE' service already installed, skipping..."
+fi
 
-chmod 744 $CWD/$USB_SERVICE.sh
-ln -s $CWD/$USB_SERVICE.sh /usr/bin/
-ln -s $CWD/$USB_SERVICE.service /etc/systemd/system/
+# Auto-connect to device
+if [ ! -f /etc/systemd/system/$CON_SERVICE.service ]; then
+    echo "Installing '$CON_SERVICE' service..."
+    mkdir /tmp/$CON_SERVICE
+    chmod 744 $CWD/$CON_SERVICE.sh
+    ln -s $CWD/$CON_SERVICE.sh /usr/bin/
+    ln -s $CWD/$CON_SERVICE.service /etc/systemd/system/
+else
+    echo "'$CON_SERVICE' service already installed, skipping..."
+fi
 
-#mkdir /tmp/$HID_SERVICE
-
-#chmod 744 $CWD/$HID_SERVICE.py
-#ln -s $CWD/$HID_SERVICE.py /usr/bin/
-#ln -s $CWD/$HID_SERVICE.service /etc/systemd/system/
+# sudo cp quimby-* /usr/local/bin/
+# sudo cp quimby.rules /etc/udev/rules.d/
+# sudo cp quimby.service /etc/systemd/system/
 
 systemctl enable $USB_SERVICE.service
-#systemctl enable $HID_SERVICE.service
+systemctl enable $CON_SERVICE.service
 
 echo "Please reboot to finish installation."
