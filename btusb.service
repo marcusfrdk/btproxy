@@ -3,7 +3,7 @@ Description=USB HID Proxy Service
 
 [Service]
 User=root
-ExecStart=/usr/bin/btusb.sh
+ExecStart=/home/pi/btproxy/btusb.sh
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Bluetooth HID Service
+Requires=btconnect.service
+After=btconnect.service
+
+[Service]
+ExecStart=python3 /home/pi/btproxy/bthid.py
+ExecStop=python3 /home/pi/btproxy/bthid_clean.py
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

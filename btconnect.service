@@ -3,7 +3,7 @@ Description=Bluetooth Auto-Connect Service
 After=bluetooth.service
 
 [Service]
-ExecStart=/usr/bin/btconnect.sh
+ExecStart=/home/pi/btproxy/btconnect.sh
 
 [Install]
 WantedBy=multi-user.target
