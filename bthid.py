@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 import evdev
-import argparse
 import os
-import sys
-import selectors
+from datetime import datetime
 
 scan_to_hid = {
     # Reserved: 0
@@ -175,6 +173,13 @@ modifiers = {
     evdev.ecodes.KEY_RIGHTMETA: 1 << 7,
 }
 
+def log(msg: str) -> None:
+    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    msg = f"{dt} {msg}\n"
+    with open("./bthid.log", "a", encoding="utf-8") as f:
+        f.write(msg)
+    print(msg, end="")
+
 
 class Keyboard(object):
     def __init__(self, dst):
@@ -199,12 +204,12 @@ class Keyboard(object):
         else:
             code = scan_to_hid.get(data.scancode, None)
             if code is None:
-                print("Ignoring unknown key", data)
+                log("Ignoring unknown key", data)
                 return
 
             if data.keystate == data.key_down:
                 if len(self.keys_down) >= 6:
-                    print("Ignoring key due to rollover")
+                    log("Ignoring key due to rollover")
                     return
                 self.keys_down.add(code)
 
@@ -272,10 +277,13 @@ if __name__ == '__main__':
             for event in src.read_loop():
                 kbd(event)
                 con(event)
+                raise ValueError("Placeholder error")
     except KeyboardInterrupt:
         pass
+    except Exception as e:
+        log("Exception: " + str(e))
     finally:
-        print("Exiting...")
+        log("Exiting...")
         src.ungrab()
         kbd.dst.close()
         con.dst.close()
