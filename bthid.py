@@ -4,6 +4,8 @@ import evdev
 import os
 from datetime import datetime
 
+log_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "bthid.log"))
+
 scan_to_hid = {
     # Reserved: 0
     # ErrorRollOver: 1
@@ -176,7 +178,7 @@ modifiers = {
 def log(msg: str) -> None:
     dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     msg = f"{dt} {msg}\n"
-    with open("./bthid.log", "a", encoding="utf-8") as f:
+    with open(log_path, "a", encoding="utf-8") as f:
         f.write(msg)
     print(msg, end="")
 
