@@ -279,9 +279,6 @@ if __name__ == '__main__':
             for event in src.read_loop():
                 kbd(event)
                 con(event)
-
-                print("Event", event)
-                # raise ValueError("Placeholder error")
     except KeyboardInterrupt:
         pass
     except Exception as e:
