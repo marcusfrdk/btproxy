@@ -207,7 +207,7 @@ class Keyboard(object):
         else:
             code = scan_to_hid.get(data.scancode, None)
             if code is None:
-                log("Ignoring unknown key", data)
+                log(f"Ignoring unknown key: {data.scancode}")
                 return
 
             if data.keystate == data.key_down:
@@ -272,15 +272,17 @@ if __name__ == '__main__':
 
     while True:
         try:
+            fd_kbd = os.open("/dev/hidg0", os.O_WRONLY)
+            fd_con = os.open("/dev/hidg1", os.O_WRONLY)
+
             src = evdev.InputDevice('/dev/input/event1')
-            kbd = Keyboard(os.open("/dev/hidg0", os.O_WRONLY))
-            con = Consumer(os.open("/dev/hidg1", os.O_WRONLY))
+            kbd = Keyboard(fd_kbd)
+            con = Consumer(fd_con)
             src.grab()
 
-            while True:
-                for event in src.read_loop():
-                    kbd(event)
-                    con(event)
+            for event in src.read_loop():
+                kbd(event)
+                con(event)
         except KeyboardInterrupt:
             pass
         except Exception as e:
@@ -288,7 +290,7 @@ if __name__ == '__main__':
         finally:
             log("Exiting...")
             src.ungrab()
-            kbd.dst.close()
-            con.dst.close()
+            os.close(fd_kbd)
+            os.close(fd_con)
 
         
