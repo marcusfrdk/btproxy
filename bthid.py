@@ -3,6 +3,7 @@
 import evdev
 import os
 from datetime import datetime
+from traceback import format_exc
 
 log_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "bthid.log"))
 
@@ -282,7 +283,7 @@ if __name__ == '__main__':
         except KeyboardInterrupt:
             pass
         except Exception as e:
-            log("Exception: " + str(e))
+            log(format_exc())
         finally:
             log("Exiting...")
             src.ungrab()
