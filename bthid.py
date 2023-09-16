@@ -269,24 +269,24 @@ if __name__ == '__main__':
 
     # args = parser.parse_args()
 
-    try:
-        src = evdev.InputDevice('/dev/input/event1')
-        kbd = Keyboard(os.open("/dev/hidg0", os.O_WRONLY))
-        con = Consumer(os.open("/dev/hidg1", os.O_WRONLY))
-        src.grab()
+    while True:
+        try:
+            src = evdev.InputDevice('/dev/input/event1')
+            kbd = Keyboard(os.open("/dev/hidg0", os.O_WRONLY))
+            con = Consumer(os.open("/dev/hidg1", os.O_WRONLY))
+            src.grab()
 
-        while True:
             for event in src.read_loop():
                 kbd(event)
                 con(event)
-    except KeyboardInterrupt:
-        pass
-    except Exception as e:
-        log("Exception: " + str(e))
-    finally:
-        log("Exiting...")
-        src.ungrab()
-        kbd.dst.close()
-        con.dst.close()
+        except KeyboardInterrupt:
+            pass
+        except Exception as e:
+            log("Exception: " + str(e))
+        finally:
+            log("Exiting...")
+            src.ungrab()
+            kbd.dst.close()
+            con.dst.close()
 
         
