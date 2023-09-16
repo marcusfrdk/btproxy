@@ -277,9 +277,10 @@ if __name__ == '__main__':
             con = Consumer(os.open("/dev/hidg1", os.O_WRONLY))
             src.grab()
 
-            for event in src.read_loop():
-                kbd(event)
-                con(event)
+            while True:
+                for event in src.read_loop():
+                    kbd(event)
+                    con(event)
         except KeyboardInterrupt:
             pass
         except Exception as e:
