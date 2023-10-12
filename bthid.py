@@ -289,7 +289,10 @@ if __name__ == '__main__':
             log(format_exc())
         finally:
             log("Exiting...")
-            src.ungrab()
+            try:
+                src.ungrab()
+            except OSError:
+                pass
             os.close(fd_kbd)
             os.close(fd_con)
 
