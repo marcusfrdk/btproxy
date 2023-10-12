@@ -2,6 +2,7 @@
 
 import evdev
 import os
+import time
 from datetime import datetime
 from traceback import format_exc
 
@@ -272,8 +273,16 @@ if __name__ == '__main__':
 
     while True:
         try:
-            fd_kbd = os.open("/dev/hidg0", os.O_WRONLY)
-            fd_con = os.open("/dev/hidg1", os.O_WRONLY)
+            fd_kbd = None
+            fd_con = None
+            while not fd_kbd or not fd_con:
+                try:
+                    fd_kbd = os.open("/dev/hidg0", os.O_WRONLY)
+                    fd_con = os.open("/dev/hidg1", os.O_WRONLY)
+                except FileNotFoundError:
+                    fd_kbd = None
+                    fd_con = None
+                    time.sleep(1)
 
             src = evdev.InputDevice('/dev/input/event1')
             kbd = Keyboard(fd_kbd)
