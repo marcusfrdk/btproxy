@@ -284,9 +284,18 @@ if __name__ == '__main__':
                     fd_con = None
                     time.sleep(1)
 
-            src = evdev.InputDevice('/dev/input/event1')
-            kbd = Keyboard(fd_kbd)
-            con = Consumer(fd_con)
+            src, kbd, con = None, None, None
+            while not src or not kbd or not con:
+                try:
+                    src = evdev.InputDevice('/dev/input/event1')
+                    kbd = Keyboard(fd_kbd)
+                    con = Consumer(fd_con)
+                except OSError:
+                    src = None
+                    kbd = None
+                    con = None
+                    time.sleep(1)
+
             src.grab()
 
             for event in src.read_loop():
